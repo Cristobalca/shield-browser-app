@@ -1,0 +1,57 @@
+{
+  "name": "shield-browser",
+  "version": "1.0.0",
+  "description": "Shield Browser",
+  "main": "main.js",
+  "author": "Shield Browser Team",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.shieldbrowser.app",
+    "productName": "Shield Browser",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!data/*",
+      "!dist/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signAndEditExecutable": false
+    },
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/playwright-core/**/*",
+      "node_modules/playwright/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "playwright-browsers",
+        "to": "playwright-browsers"
+      }
+    ]
+  },
+  "devDependencies": {
+    "electron": "^39.2.3",
+    "electron-builder": "^25.1.8"
+  },
+  "dependencies": {
+    "sql.js": "^1.8.0",
+    "playwright": "^1.56.1",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}

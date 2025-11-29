@@ -1,0 +1,44 @@
+# Dependencias
+node_modules/
+dist/
+
+# Archivos de estado y configuración
+fingerprint-state.json
+state.json
+nodes_agente1_REPORTE.txt
+config.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Playwright browser binaries (downloaded for packaging)
+playwright-browsers/
+
+# Electron / build artifacts
+dist-electron/
+*.exe
+*.AppImage
+app/**/node_modules/
+
+# User data and runtime files
+*.db
+data/
+*.sqlite
+*.sqlite3
+
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS and Editor
+RELEASES
+.DS_Store
+Thumbs.db

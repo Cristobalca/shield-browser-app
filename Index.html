@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shield Browser</title>
+    <style>
+        :root {
+            --bg-dark: #1a1a1a;
+            --bg-medium: #2a2a2a;
+            --bg-light: #3a3a3a;
+            --text-light: #e0e0e0;
+            --text-medium: #a0a0a0;
+            --accent-purple: #6c5ce7;
+            --border-color: #444444;
+        }
+
+        /* Estilos generales - Modo oscuro elegante */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid var(--accent-purple);
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: var(--accent-purple);
+            text-shadow: 0 0 20px rgba(108, 92, 231, 0.4);
+            letter-spacing: 3px;
+        }
+
+        /* Secciones */
+        section {
+            background: var(--bg-medium);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        /* Fieldset */
+        fieldset {
+            border: 2px solid rgba(108, 92, 231, 0.4);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        legend {
+            color: var(--accent-purple);
+            font-weight: bold;
+            padding: 0 10px;
+        }
+
+        /* Radio buttons */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #00ff88;
+        }
+
+        .radio-option label {
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        /* Select dropdown */
+        select {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-light);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:hover:not(:disabled) {
+            border-color: var(--accent-purple);
+            background: var(--bg-light);
+        }
+
+        select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--accent-purple);
+            font-weight: 600;
+        }
+
+        .proxy-stats {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .proxy-card {
+            border: 1px solid rgba(108, 92, 231, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .proxy-card strong {
+            font-size: 1.2rem;
+            color: var(--accent-purple);
+        }
+
+        /* Botones */
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .session-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .session-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .session-actions button {
+            height: 100%;
+            min-width: 0;
+        }
+
+        #startSessionBtn {
+            flex: 2;
+            background: var(--accent-purple);
+            color: #ffffff;
+            padding: 20px;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.35);
+        }
+
+        #startSessionBtn:hover {
+            background: #5a4ad9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.5);
+        }
+
+        #startSessionBtn:active {
+            transform: translateY(0);
+            background: #4737c2;
+        }
+
+        #startSessionBtn.active-session {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            border-color: #e74c3c;
+        }
+
+        #startSessionBtn.active-session:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        }
+
+        /* Panel de proxy activo */
+        .active-proxy-panel {
+            background: rgba(108, 92, 231, 0.12);
+            border: 2px solid rgba(108, 92, 231, 0.5);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .active-proxy-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(108, 92, 231, 0.3);
+        }
+
+        .active-proxy-icon {
+            font-size: 1.4rem;
+        }
+
+        .active-proxy-title {
+            color: var(--accent-purple);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .active-proxy-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .active-proxy-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .active-proxy-row .label {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+        }
+
+        .active-proxy-row .value {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .poliza-badge {
+            background: rgba(108, 92, 231, 0.3);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+        }
+
+        /* Modal de pólizas */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--bg-medium);
+            border: 2px solid var(--accent-purple);
+            border-radius: 15px;
+            padding: 30px;
+            min-width: 350px;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            color: var(--accent-purple);
+            margin-bottom: 15px;
+        }
+
+        .modal-proxy-info {
+            color: var(--text-medium);
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-modal-cancel {
+            padding: 10px 25px;
+            border: 2px solid var(--border-color);
+            background: transparent;
+            color: var(--text-medium);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-modal-cancel:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-modal-confirm {
+            padding: 10px 25px;
+            border: none;
+            background: var(--accent-purple);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .btn-modal-confirm:hover {
+            background: #5a4bd4;
+        }
+
+        /* Alerta de advertencia */
+        .warning-alert {
+            background: rgba(231, 76, 60, 0.15);
+            border: 2px solid rgba(231, 76, 60, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #e74c3c;
+        }
+
+        .warning-alert-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-alert-text {
+            font-size: 0.95rem;
+            color: #ff9b9b;
+        }
+
+        .proxy-list-panel {
+            border: 1px solid rgba(108, 92, 231, 0.25);
+            border-radius: 10px;
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        #proxyListContainer {
+            margin-top: 8px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+        }
+
+        #proxyListContainer.visible {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .proxy-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .proxy-list-header h4 {
+            color: var(--accent-purple);
+            margin-bottom: 4px;
+        }
+
+        .proxy-list-header small {
+            color: var(--text-medium);
+        }
+
+        #viewProxiesBtn {
+            background: rgba(108, 92, 231, 0.2);
+            color: #d6d1ff;
+            border: 1px solid rgba(108, 92, 231, 0.6);
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        #viewProxiesBtn:hover {
+            background: rgba(108, 92, 231, 0.35);
+        }
+
+        #viewProxiesBtn:disabled {
+            opacity: 0.6;
+            cursor: progress;
+        }
+
+        #proxyListTable {
+            width: 100%;
+            border-collapse: collapse;
+            display: none;
+        }
+
+        #proxyListTable th,
+        #proxyListTable td {
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        #proxyListTable th {
+            background: rgba(108, 92, 231, 0.1);
+            color: var(--text-light);
+        }
+
+        #proxyListTable td {
+            color: var(--text-medium);
+        }
+
+        .proxy-disabled-row {
+            opacity: 0.5;
+            background: rgba(255, 99, 99, 0.08);
+        }
+
+        .poliza-input {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-light);
+            padding: 4px 8px;
+            font-size: 0.9rem;
+            width: 100px;
+        }
+
+        .poliza-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .btn-icon:hover {
+            background: rgba(108, 92, 231, 0.2);
+        }
+
+        .btn-disable {
+            color: #ff6b6b;
+        }
+
+        .btn-enable {
+            color: #51cf66;
+        }
+
+        .poliza-add-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .poliza-add-input {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-light);
+            padding: 4px 6px;
+            font-size: 0.85rem;
+            width: 50px;
+            text-align: center;
+        }
+
+        .poliza-add-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+
+        .btn-confirm {
+            background: rgba(81, 207, 102, 0.2);
+            color: #51cf66;
+            border: 1px solid rgba(81, 207, 102, 0.5);
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-confirm:hover {
+            background: rgba(81, 207, 102, 0.35);
+        }
+
+        .poliza-total {
+            font-weight: bold;
+            color: var(--accent-purple);
+        }
+
+        .state-badge {
+            background: rgba(108, 92, 231, 0.25);
+            color: #d1cbff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Gestión de nodos */
+        h3 {
+            color: var(--accent-purple);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .drag-drop-area {
+            border: 3px dashed rgba(108, 92, 231, 0.4);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .drag-drop-area:hover {
+            border-color: var(--accent-purple);
+            background: rgba(108, 92, 231, 0.08);
+        }
+
+        .drag-drop-area p {
+            font-size: 1.1rem;
+            color: var(--text-medium);
+        }
+
+        #loadFileBtn {
+            background: rgba(108, 92, 231, 0.15);
+            color: var(--accent-purple);
+            border: 2px solid rgba(108, 92, 231, 0.6);
+            width: 100%;
+        }
+
+        #loadFileBtn:hover {
+            background: rgba(108, 92, 231, 0.25);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(108, 92, 231, 0.25);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--accent-purple);
+        }
+
+        /* Área de mensajes */
+        #messageArea {
+            min-height: 40px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+            color: var(--text-light);
+        }
+
+        #messageArea.show {
+            display: block;
+        }
+
+        #messageArea.error {
+            background: rgba(255, 99, 99, 0.18);
+            border: 2px solid rgba(255, 99, 99, 0.7);
+            color: #ff9b9b;
+        }
+
+        #messageArea.success {
+            background: rgba(108, 92, 231, 0.18);
+            border: 2px solid rgba(108, 92, 231, 0.7);
+            color: #d1cbff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header principal -->
+    <header>
+        <h1>Shield Browser</h1>
+    </header>
+
+    <!-- Área de mensajes -->
+    <div id="messageArea"></div>
+
+    <!-- Sección de control de validación -->
+    <section>
+        <fieldset>
+            <legend>Modo de Validación</legend>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="geoRestricted" name="validationMode" value="geo">
+                    <label for="geoRestricted">Validación Geo-Restringida</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="localMode" name="validationMode" value="local">
+                    <label for="localMode">Validación Local (sin nodo)</label>
+                </div>
+            </div>
+
+            <select id="locationSelect" disabled>
+                <option value="" disabled selected>Selecciona una ubicación</option>
+                <option value="New-York-NY">New York, NY</option>
+                <option value="Boston-MA">Boston, MA</option>
+                <option value="Philadelphia-PA">Philadelphia, PA</option>
+                <option value="Baltimore-MD">Baltimore, MD</option>
+                <option value="Washington-DC">Washington, DC</option>
+                <option value="Newark-NJ">Newark, NJ</option>
+                <option value="Hartford-CT">Hartford, CT</option>
+                <option value="Providence-RI">Providence, RI</option>
+                <option value="Albany-NY">Albany, NY</option>
+                <option value="Pittsburgh-PA">Pittsburgh, PA</option>
+                <option value="Buffalo-NY">Buffalo, NY</option>
+                <option value="Miami-FL">Miami, FL</option>
+            </select>
+        </fieldset>
+    </section>
+
+    <!-- Sección de acción + listado -->
+    <section class="session-section">
+        <div class="session-actions">
+            <button id="startSessionBtn">Iniciar Navegador</button>
+        </div>
+
+        <!-- Panel de proxy activo -->
+        <div id="activeProxyPanel" class="active-proxy-panel" style="display: none;">
+            <div class="active-proxy-header">
+                <span class="active-proxy-icon">🔒</span>
+                <span class="active-proxy-title">Proxy en uso</span>
+            </div>
+            <div class="active-proxy-info">
+                <div class="active-proxy-row">
+                    <span class="label">IP:</span>
+                    <span id="activeProxyIP" class="value">-</span>
+                </div>
+                <div class="active-proxy-row">
+                    <span class="label">Puerto:</span>
+                    <span id="activeProxyPort" class="value">-</span>
+                </div>
+                <div class="active-proxy-row">
+                    <span class="label">Estado:</span>
+                    <span id="activeProxyState" class="value state-badge">-</span>
+                </div>
+                <div class="active-proxy-row">
+                    <span class="label">Pólizas acumuladas:</span>
+                    <span id="activeProxyPolizas" class="value poliza-badge">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para preguntar pólizas al cerrar -->
+        <div id="polizaModal" class="modal-overlay" style="display: none;">
+            <div class="modal-content">
+                <h3>¿Cuántas pólizas se crearon?</h3>
+                <p class="modal-proxy-info">Proxy: <span id="modalProxyIP">-</span></p>
+                <input type="number" id="polizaModalInput" min="0" placeholder="Número de pólizas" />
+                <div class="modal-buttons">
+                    <button id="polizaModalCancel" class="btn-modal-cancel">Cancelar</button>
+                    <button id="polizaModalConfirm" class="btn-modal-confirm">Confirmar y Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="proxy-list-panel">
+            <div class="proxy-list-header">
+                <div>
+                    <h4>Proxies cargados</h4>
+                    <small style="color:#9bdac8;">Usa el estado seleccionado abajo para filtrar</small>
+                </div>
+                <button id="viewProxiesBtn">Ver proxies</button>
+            </div>
+            <div id="proxyListContainer">
+                <table id="proxyListTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Estado</th>
+                            <th>IP</th>
+                            <th>Puerto</th>
+                            <th>Usuario</th>
+                            <th>Sesiones</th>
+                            <th>Pólizas</th>
+                            <th>Agregar</th>
+                            <th>Última act.</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="proxyListBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de gestión de nodos -->
+    <section>
+        <h3>Gestión de Nodos de Prueba</h3>
+        <label class="input-label" for="proxyStateSelect">Estado de los proxies importados</label>
+        <select id="proxyStateSelect">
+            <option value="" disabled selected>Selecciona el estado (ej. NY)</option>
+            <option value="NY">New York</option>
+            <option value="MA">Massachusetts</option>
+            <option value="PA">Pennsylvania</option>
+            <option value="MD">Maryland</option>
+            <option value="DC">District of Columbia</option>
+            <option value="NJ">New Jersey</option>
+            <option value="CT">Connecticut</option>
+            <option value="RI">Rhode Island</option>
+            <option value="FL">Florida</option>
+        </select>
+        <div class="drag-drop-area" id="dragDropArea">
+            <p>📁 Arrastra y suelta archivos de nodos aquí</p>
+            <p style="font-size: 0.9rem; margin-top: 10px; color: #808080;">o haz clic en el botón de abajo</p>
+        </div>
+        <button id="loadFileBtn">Cargar Archivo de Nodos</button>
+        <div id="proxyStats" class="proxy-stats"></div>
+    </section>
+
+    <!-- Footer con contador -->
+    <footer>
+        <p>Sesiones del día: <span id="sessionCount">0</span> / 150</p>
+    </footer>
+
+    <!-- Script de renderizado -->
+    <script src="renderer.js"></script>
+</body>
+
+</html>
